@@ -5,7 +5,7 @@ class City:
     def __init__(self, city, country, attendee_num, latitude, longitude):
         self.city = city
         self.country = country
-        self.attendee_num = attendee_num
+        self.attendee_num = attendee_num #number of attendees
         self.latitude = latitude
         self.longitude = longitude
 
@@ -48,7 +48,19 @@ class City:
 
 
     def co2_to(self, other: 'City') -> float:
-        raise NotImplementedError
+        '''co2 released to travel from one city (`self`) to host city (`other`)'''
+        distance_between_cities = self.distance_to(other)
+
+
+        if distance_between_cities <= 1000:
+            return 200*distance_between_cities*self.attendee_num
+
+        elif distance_between_cities <=8000:
+            return 250*distance_between_cities*self.attendee_num
+
+        else:
+            return 300*distance_between_cities*self.attendee_num           
+            
 
 class CityCollection:
     ...
