@@ -79,13 +79,19 @@ class CityCollection:
         return sum( [i.attendee_num for i in self.cities] )
         
     def total_distance_travel_to(self, city: City) -> float:
-        raise NotImplementedError
+        distance_per_attendee = sum( [i.distance_to(city) for i in self.cities] )
+        total_distance = distance_per_attendee*self.total_attendees()
+
+        return total_distance
 
     def travel_by_country(self, city: City) -> Dict[str, float]:
         raise NotImplementedError
 
     def total_co2(self, city: City) -> float:
-        raise NotImplementedError
+        co2_per_attendee = sum( [i.co2_to(city) for i in self.cities] )
+        total_co2 = co2_per_attendee*self.total_attendees()
+        
+        return total_co2
 
     def co2_by_country(self, city: City) -> Dict[str, float]:
         raise NotImplementedError
