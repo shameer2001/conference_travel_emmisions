@@ -63,14 +63,21 @@ class City:
 
  
 class CityCollection:
-    ...
+    def __init__(self, cities):
+        self.cities = cities
+        
+        if type(cities) != list:
+            raise ValueError("Input must be a list of `City` objects")
+
 
     def countries(self) -> List[str]:
-        raise NotImplementedError
+        countries = set([i.country for i in self.cities]) #a set only extracts unique values (countries in this case)
+        
+        return list(countries)
 
     def total_attendees(self) -> int:
-        raise NotImplementedError
-
+        return sum( [i.attendee_num for i in self.cities] )
+        
     def total_distance_travel_to(self, city: City) -> float:
         raise NotImplementedError
 
