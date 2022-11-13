@@ -24,10 +24,10 @@ class City:
             raise ValueError("Longitude is invald; must be between (-180, 180)") 
 
 
-        if type(longitude) != float or type(longitude) != int:
-            raise ValueError("Longitude must be an integer or float") 
-        if type(latitude) != float or type(latitude) != int:
-            raise ValueError("Latitude must be an integer or float") 
+        if type(longitude) != float:
+            raise ValueError("Longitude must be a float") 
+        if type(latitude) != float:
+            raise ValueError("Latitude must be a float") 
 
 
 
@@ -52,16 +52,16 @@ class City:
         distance_between_cities = self.distance_to(other)
 
 
-        if distance_between_cities <= 1000:
+        if distance_between_cities <= 1000: #public transport
             return 200*distance_between_cities*self.attendee_num
 
-        elif distance_between_cities <=8000:
+        elif distance_between_cities <=8000: #short-haul flight
             return 250*distance_between_cities*self.attendee_num
 
-        else:
+        else: #long-haul flight
             return 300*distance_between_cities*self.attendee_num           
-            
 
+ 
 class CityCollection:
     ...
 
