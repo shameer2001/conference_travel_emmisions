@@ -84,17 +84,63 @@ class CityCollection:
 
         return total_distance
 
+
+
+
     def travel_by_country(self, city: City) -> Dict[str, float]:
-        raise NotImplementedError
+        country_to_distance = {}
+        keys = [str(i.country) for i in self.cities]
+        values = [i.distance_to(city)*i.attendee_num for i in self.cities]
+        
+
+        
+        for i in range(len(keys)):
+            country_to_distance[keys[i]] = 0 
+            
+        for i in range(len(keys)):   
+            if country_to_distance[keys[i]] >0:
+                country_to_distance[keys[i]] = country_to_distance[keys[i]] + values[i]        
+            else:
+                country_to_distance[keys[i]] =  values[i]
+                
+            
+                
+        return country_to_distance
+
+
+
+
 
     def total_co2(self, city: City) -> float:
         co2_per_attendee = sum( [i.co2_to(city) for i in self.cities] )
         total_co2 = co2_per_attendee*self.total_attendees()
-        
+
         return total_co2
 
+
+
+
     def co2_by_country(self, city: City) -> Dict[str, float]:
-        raise NotImplementedError
+        country_to_co2 = {}
+        keys = [str(i.country) for i in self.cities]
+        values = [i.co2_to(city)*i.attendee_num for i in self.cities]
+        
+
+        
+        for i in range(len(keys)):
+            country_to_co2[keys[i]] = 0 
+            
+        for i in range(len(keys)):   
+            if country_to_co2[keys[i]] >0:
+                country_to_co2[keys[i]] = country_to_co2[keys[i]] + values[i]        
+            else:
+                country_to_co2[keys[i]] =  values[i]
+                
+                
+        return country_to_co2
+
+
+
 
     def summary(self, city: City):
         raise NotImplementedError
@@ -104,4 +150,24 @@ class CityCollection:
 
     def plot_top_emitters(self, city: City, n: int, save: bool):
         raise NotImplementedError
+
+
+
+
+
+
+#checking that functions are working correctly:
+
+manny = City('manchester', 'UK', 21, 39.22, 30.33) # made up values
+ny = City('NY', 'USA', 21, 38.22, 28.33)
+d = City('Dublin', 'Ireland', 52, 46.22, 2.33)
+l = City('London', 'UK', 21, 45.22, 18.33)
+
+cities_list = [d, l, ny, manny]
+
+
+
+city_collection = CityCollection(cities_list)
+
+print(city_collection.total_distance_travel_to(ny))
 
