@@ -1,5 +1,5 @@
 from typing import Dict, List, Tuple
-from math import asin, sin, cos, sqrt
+from math import asin, sin, cos, sqrt, radians
 
 class City:
     def __init__(self, city, country, attendee_num, latitude, longitude):
@@ -38,8 +38,8 @@ class City:
         '''use Haversine formula to calculate distance between 2 cities'''
 
         R=6371 #radius of earth
-        first_term = sin(other.latitude/2  -  self.latitude/2)**2 #first term in equation
-        second_term = cos(self.latitude)*cos(other.latitude)*( sin(other.longitude - self.longitude)**2 ) #second term in equation
+        first_term = sin(radians(   other.latitude/2  -  self.latitude/2   ))**2 #first term in equation
+        second_term = cos(radians(   self.latitude   ))*cos(radians(  other.latitude  ))*( sin(radians(  other.longitude - self.longitude  ))**2 ) #second term in equation
 
         d = 2*R*asin(sqrt(  first_term + second_term   )) #distance 
 
@@ -91,13 +91,17 @@ class CityCollection:
         country_to_distance = {}
         keys = [str(i.country) for i in self.cities]
         values = [i.distance_to(city)*i.attendee_num for i in self.cities]
-        
 
-        
+
+        #assign 0 to each key:        
         for i in range(len(keys)):
             country_to_distance[keys[i]] = 0 
-            
+
+        
         for i in range(len(keys)):   
+            #if there is already a distance assigned to the country (ie >0 value), then
+            # add on the new value to avoid replacing the value:
+
             if country_to_distance[keys[i]] >0:
                 country_to_distance[keys[i]] = country_to_distance[keys[i]] + values[i]        
             else:
@@ -130,7 +134,10 @@ class CityCollection:
         for i in range(len(keys)):
             country_to_co2[keys[i]] = 0 
             
-        for i in range(len(keys)):   
+        for i in range(len(keys)):
+            #if there is already a co2 amount assigned to the country (ie >0 value), then 
+            # add on the new value to avoid replacing the value:
+
             if country_to_co2[keys[i]] >0:
                 country_to_co2[keys[i]] = country_to_co2[keys[i]] + values[i]        
             else:
@@ -143,7 +150,12 @@ class CityCollection:
 
 
     def summary(self, city: City):
-        raise NotImplementedError
+        co2_tonnes_rounded = int(round(  self.total_co2(city)/1000  ))
+        
+        print("Host city: {} ({})".format(city.city, city.country) )
+        print("Total CO2: {} tonnes".format(   co2_tonnes_rounded    ))
+        print("Total attendees travelling to {} from {} different cities: {}".format(city.city, len(self.cities), self.total_attendees()))
+
 
     def sorted_by_emissions(self) -> List[Tuple[str, float]]:
         raise NotImplementedError
@@ -170,4 +182,9 @@ cities_list = [d, l, ny, manny]
 city_collection = CityCollection(cities_list)
 
 print(city_collection.total_distance_travel_to(ny))
+
+
+
+z = City('Zurich', 'Switzerland', 52, 47.22, 8.33)
+city_collection.summary(z)
 
