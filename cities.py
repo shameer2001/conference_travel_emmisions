@@ -40,7 +40,7 @@ class City:
 
         R=6371 #radius of earth
         first_term = sin(radians(   other.latitude/2  -  self.latitude/2   ))**2 #first term in equation
-        second_term = cos(radians(   self.latitude   ))*cos(radians(  other.latitude  ))*( sin(radians(  other.longitude - self.longitude  ))**2 ) #second term in equation
+        second_term = cos(radians(   self.latitude   ))*cos(radians(  other.latitude  ))*( sin(radians(  other.longitude/2 - self.longitude/2  ))**2 ) #second term in equation
 
         d = 2*R*asin(sqrt(  first_term + second_term   )) #distance 
 
@@ -156,7 +156,7 @@ class CityCollection:
         
         print("Host city: {} ({})".format(city.city, city.country) )
         print("Total CO2: {} tonnes".format(   co2_tonnes_rounded    ))
-        print("Total attendees travelling to {} from {} different cities: {}".format(city.city, len(self.cities), self.total_attendees()))
+        print("Total attendees travelling to {} from {} different cities: {}".format(city.city, len(self.cities)-1, self.total_attendees()-city.attendee_num))
 
 
     def sorted_by_emissions(self) -> List[Tuple[str, float]]:
