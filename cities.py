@@ -13,10 +13,13 @@ class City:
 
 
         #create errors to  check for valud values and types of properties:
+        if type(city) != str or type(country) != str:
+            raise TypeError("City name and country name must be a string")
+
         if attendee_num < 0:
             raise ValueError("Number of attendees is negative") 
         if type(attendee_num) != int:
-            raise ValueError("Number of attendees must be an integer")
+            raise TypeError("Number of attendees must be an integer")
 
 
         if latitude > 90 or latitude < -90:
@@ -25,10 +28,10 @@ class City:
             raise ValueError("Longitude is invald; must be between (-180, 180)") 
 
 
-        if type(longitude) != float:
-            raise ValueError("Longitude must be a float") 
-        if type(latitude) != float:
-            raise ValueError("Latitude must be a float") 
+        if type(longitude) != float and type(longitude) != int:
+            raise TypeError("Longitude must be a float or integer") 
+        if type(latitude) != float and type(latitude) != int:
+            raise TypeError("Latitude must be a float or integer") 
 
 
 
@@ -72,14 +75,21 @@ class CityCollection:
 
 
     def countries(self) -> List[str]:
-        countries = set([i.country for i in self.cities]) #a set only extracts unique values (countries in this case)
+        '''A list of unique country names'''
+        countries = set([i.country for i in self.cities])#a set only extracts unique values (countries in this case)
         
         return list(countries)
 
+
+
     def total_attendees(self) -> int:
+        'The attendees in all cities'
         return sum( [i.attendee_num for i in self.cities] )
         
+
+
     def total_distance_travel_to(self, city: City) -> float:
+        '''The total distance travelled by attendees from all cities (excluding the host city) to the host city'''
         total_distance = sum( [i.distance_to(city)*i.attendee_num for i in self.cities] )
 
         #for i in self.cities:
@@ -90,6 +100,7 @@ class CityCollection:
 
 
     def travel_by_country(self, city: City) -> Dict[str, float]:
+        '''A dictionary of a mapping of countries to the distance travelled by all attendees from that country to the host city'''
         country_to_distance = {}
         keys = [str(i.country) for i in self.cities]
         values = [i.distance_to(city)*i.attendee_num for i in self.cities]
@@ -118,6 +129,8 @@ class CityCollection:
 
 
     def total_co2(self, city: City) -> float:
+        '''The total co2 released by attendees from all cities (excluding the host city) to the host city'''
+
         total_co2 = sum( [i.co2_to(city) for i in self.cities] )
 
         return total_co2
@@ -126,6 +139,8 @@ class CityCollection:
 
 
     def co2_by_country(self, city: City) -> Dict[str, float]:
+        '''A dictionary of a mapping of countries to the co2 released by all attendees from that country to the host city'''
+
         country_to_co2 = {}
         keys = [str(i.country) for i in self.cities]
         values = [i.co2_to(city)for i in self.cities]
@@ -152,6 +167,12 @@ class CityCollection:
 
 
     def summary(self, city: City):
+        '''Printed summary of important info: 
+        Host city and it's country, 
+        Total CO2 released to get to that city by all attendees, 
+        Total attendees travelling'''
+
+
         co2_tonnes_rounded = int(round(  self.total_co2(city)/1000  ))
         
         print("Host city: {} ({})".format(city.city, city.country) )
@@ -159,7 +180,12 @@ class CityCollection:
         print("Total attendees travelling to {} from {} different cities: {}".format(city.city, len(self.cities)-1, self.total_attendees()-city.attendee_num))
 
 
+
+
     def sorted_by_emissions(self) -> List[Tuple[str, float]]:
+        '''A list of cities and the emmisions if that city was the host '''
+
+
         sorted_city_co2 = []
         city_names = [i.city for i in self.cities]
         co2_emissions  = [self.total_co2(i) for i in self.cities]
@@ -179,6 +205,21 @@ class CityCollection:
 
 
     def plot_top_emitters(self, city: City, n: int, save: bool):
+        '''A bar chart of the top n countries with the most emmisions by the attendees when travelling to the host city. 
+        The other countries are added and displayed as an individual bar.'''
+
+
+        #test for datatype and value of n:
+        if n> len(self.countries()):
+            raise ValueError("`n` must be less than or equal to the number of countries in collection")
+        if type(n) != int:
+            raise TypeError("`n` must be an integer")
+
+        #test for datatype of save:
+        if type(save) != bool:
+            raise TypeError("`save` must be a boolean")
+        
+
         sorted_country_co2 = []
 
         countries = list(self.co2_by_country(city).keys())
@@ -214,7 +255,8 @@ class CityCollection:
         plt.ylabel('Total CO2 Emissions (Tonnes)')
 
         if save == True:
-            plt.savefig('idk.png')
+            form = ('_'.join(city.city.split())).lower() #include underscore and host city in filename
+            plt.savefig('{}.png'.format(form))
 
         plt.show()
         
