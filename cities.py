@@ -295,10 +295,11 @@ class CityCollection:
 
         plt.figure()
         plt.bar(x_countries_pos, y_co2)
-        plt.xticks(x_countries_pos, x_countries)
+        plt.xticks(x_countries_pos, x_countries, rotation=35)
         plt.title('Total Emissions From Each Country (Top {})'.format(n))
         plt.ylabel('Total CO2 Emissions (Tonnes)')
-
+        plt.tight_layout()
+        
         if save == True:
             form = ('_'.join(city.city.split())).lower() #include underscore and host city in filename
             plt.savefig('{}.png'.format(form))
