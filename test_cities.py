@@ -12,23 +12,7 @@ dhaka = City('Dhaka', 'Bangladesh', 10, 23.7593572, 90.3788136)
 
 city_list = [pergamino, sydney, richmond,  dhaka]
 collection = CityCollection(city_list)
-#print(algiers.distance_to(pergamino))
-#print(algiers.co2_to(pergamino))
-#print(collection.total_co2(algiers))
-#print(collection.countries())
-#print(collection.total_attendees())
-brisbane = City('Brisbane', 'Australia', 6, -27.4689682, 153.0234991) 
-perth = City('Perth', 'Australia', 17, -31.9527121, 115.8604796) 
 
-print(richmond.distance_to(sydney))
-print(sydney.distance_to(perth))
-
-#print(collection.co2_by_country(algiers))
-
-#for i in city_list:
-    #print(collection.total_co2(i))
-
-#print(collection.sorted_by_emissions()[0])
 
 def test_distance_to():
     result = algiers.distance_to(pergamino)
