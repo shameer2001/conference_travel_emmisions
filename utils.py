@@ -29,7 +29,7 @@ def read_attendees_file(filepath: Path) -> CityCollection:
             latitudes.append( float(row[4]) )
             longitudes.append( float(row[5]) )
 
-        #list of all city objects for all cities in csv:
+        #list of all city objects for all cities in csv file:
         all_City_objects = [City(cities[i], countries[i], attendee_nums[i], latitudes[i], longitudes[i]) for i in range(len(cities))] 
 
         return CityCollection(all_City_objects)

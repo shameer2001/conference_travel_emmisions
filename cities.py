@@ -136,7 +136,7 @@ class CityCollection:
         
         for i in range(len(keys)):   
             #if there is already a distance assigned to the country (ie >0 value), then
-            # add on the new value to avoid replacing the value:
+            #add on the new value to avoid replacing the value:
 
             if country_to_distance[keys[i]] >0:
                 country_to_distance[keys[i]] = country_to_distance[keys[i]] + values[i]        

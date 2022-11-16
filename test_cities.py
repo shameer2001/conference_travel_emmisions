@@ -89,7 +89,7 @@ def test_co2_edge_case():
 
 
     #for <1000km if statement:
-    result1 = richmond.co2_to(sydney)/(  richmond.distance_to(sydney)*richmond.attendee_num  ) #only want scalefactor
+    result1 = richmond.co2_to(sydney)/(  richmond.distance_to(sydney)*richmond.attendee_num  ) #only want scale-factor
     expected1 = 200
 
     #1000-8000km:
