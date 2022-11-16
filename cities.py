@@ -12,7 +12,7 @@ class City:
 
 
 
-        #create errors to  check for valud values and types of properties:
+        #create errors to  check for valid values and types of inputs:
         if type(city) != str or type(country) != str:
             raise TypeError("City name and country name must be a string.")
 
@@ -40,6 +40,8 @@ class City:
     
     def distance_to(self, other: 'City') -> float:
         '''use Haversine formula to calculate distance between 2 cities'''
+
+        #check input is a `City` object (inlcluded in all City object-dependent functions):
         if type(other) != City:
             raise TypeError("Input `other` must be a `City` object.")
 
@@ -56,8 +58,8 @@ class City:
 
     def co2_to(self, other: 'City') -> float:
         '''co2 released to travel from one city (`self`) to host city (`other`) by all attendees'''
-        if type(other) != City:
-            raise TypeError("Input `other` must be a `City` object.")
+        #if type(other) != City:
+            #raise TypeError("Input `other` must be a `City` object.")
 
 
 
@@ -78,15 +80,17 @@ class CityCollection:
     def __init__(self, cities):
         self.cities = cities
         
-        if type(cities) != list:
+        if type(cities) != list: #input must be a list
             raise TypeError("Input must be a list of `City` objects.")
-        if len(cities) == 0:
+        if len(cities) == 0: #list must not be empty
             raise ValueError("Input list is empty.")
 
-        for i in cities:
+        for i in cities: #test that each item in list is a `City` object
             if type(i) != City:
                 raise TypeError("Input list items must all be `City` objects.")
-                
+
+
+
     def countries(self) -> List[str]:
         '''A list of unique country names'''
         countries = set([i.country for i in self.cities])#a set only extracts unique values (countries in this case)
@@ -96,20 +100,18 @@ class CityCollection:
 
 
     def total_attendees(self) -> int:
-        'The attendees in all cities'
+        '''The number of attendees in all cities'''
         return sum( [i.attendee_num for i in self.cities] )
         
 
 
     def total_distance_travel_to(self, city: City) -> float:
         '''The total distance travelled by attendees from all cities (excluding the host city) to the host city'''
-        total_distance = sum( [i.distance_to(city)*i.attendee_num for i in self.cities] )
-
-        #for i in self.cities:
-        #    print(i,city,  i.attendee_num, '\n' )
-
         if type(city) != City:
             raise TypeError("Input host city must be a `City` object.")
+
+
+        total_distance = sum( [i.distance_to(city)*i.attendee_num for i in self.cities] )
 
         return total_distance
 
@@ -120,6 +122,7 @@ class CityCollection:
         '''A dictionary of a mapping of countries to the distance travelled by all attendees from that country to the host city'''
         if type(city) != City:
             raise TypeError("Input host city must be a `City` object.")
+
 
         country_to_distance = {}
         keys = [str(i.country) for i in self.cities]
@@ -154,7 +157,6 @@ class CityCollection:
             raise TypeError("Input host city must be a `City` object.")
 
         total_co2 = sum( [i.co2_to(city) for i in self.cities] )
-
         return total_co2
 
 
@@ -164,6 +166,7 @@ class CityCollection:
         '''A dictionary of a mapping of countries to the co2 released by all attendees from that country to the host city'''
         if type(city) != City:
             raise TypeError("Input host city must be a `City` object.")
+
 
         country_to_co2 = {}
         keys = [str(i.country) for i in self.cities]
@@ -198,6 +201,7 @@ class CityCollection:
         if type(city) != City:
             raise TypeError("Input host city must be a `City` object.")
 
+
         co2_tonnes_rounded = int(round(  self.total_co2(city)/1000  ))
         
         print("Host city: {} ({})".format(city.city, city.country) )
@@ -216,21 +220,18 @@ class CityCollection:
 
     def sorted_by_emissions(self) -> List[Tuple[str, float]]:
         '''A list of cities and the emmisions if that city was the host '''
-
-
         sorted_city_co2 = []
-        #city_names = [i.city for i in self.cities]
-        #co2_emissions  = [self.total_co2(i) for i in self.cities]
         
-
         #create 2 "columns"; city names and the emmisions if they were the host city:
         for i in self.cities:
             sorted_city_co2.append( (  i.city, self.total_co2(i)  ) )  
         
         
         sorted_city_co2.sort( key=lambda x: x[1]) #sort by second column (ie ammount of co2)
-
         return sorted_city_co2
+
+
+
 
 
 
@@ -257,6 +258,8 @@ class CityCollection:
 
         sorted_country_co2 = []
 
+
+        #convert co2 by country dictionary into two-column list:
         countries = list(self.co2_by_country(city).keys())
         co2 = list(self.co2_by_country(city).values())
         
@@ -264,25 +267,32 @@ class CityCollection:
             sorted_country_co2.append( [  countries[i], co2[i]/1000  ] ) #co2/1000 to convert to tonnes
             
             
-        sorted_country_co2.sort( key=lambda x: x[1], reverse=True)      
-            
+        sorted_country_co2.sort( key=lambda x: x[1], reverse=True) #sort from highest co2 to lowest     
+
+
+
+        #extract names and co2 values from 2-column list:    
         country_names = [sorted_country_co2[i][0] for i in range(len(countries))]
         co2_values = [sorted_country_co2[i][1] for i in range(len(countries))]
         
         
      
         
-        x_countries = country_names[0:n]
+        x_countries = country_names[0:n] #range from 0:n
         y_co2 = co2_values[0:n]
         
         other_countries = 'Everywhere else'
-        other_co2 = sum(  co2_values[n:]  )
+        other_co2 = sum(  co2_values[n:]  ) #sum residual/remaining co2 values
         
-        x_countries = x_countries + [other_countries]
+        #add 'everywhere else' countries and values onto lists
+        x_countries = x_countries + [other_countries] 
         y_co2 = y_co2 + [other_co2]
         
         x_countries_pos = [i for i, _ in enumerate(x_countries)] #assign positions to country strings
         
+
+
+
         plt.figure()
         plt.bar(x_countries_pos, y_co2)
         plt.xticks(x_countries_pos, x_countries)
@@ -295,39 +305,3 @@ class CityCollection:
 
         plt.show()
         
-        #return sorted_country_co2
-        #return x_countries
-        
-        #return x_countries, y_co2
-        
-
-
-
-
-
-#checking that functions are working correctly:
-
-manny = City('manchester', 'UK', 21, 39.22, 30.33) # made up values
-ny = City('NY', 'USA', 21, 38.22, 28.33)
-d = City('Dublin', 'Ireland', 52, 46.22, 2.33)
-l = City('London', 'UK', 21, 45.22, 18.33)
-
-cities_list = [d, l, ny, manny]
-
-
-
-city_collection = CityCollection(cities_list)
-
-#print(city_collection.total_distance_travel_to(ny))
-
-
-
-z = City('Zurich', 'Switzerland', 52, 47.22, 8.33)
-#city_collection.summary(z)
-
-
-#names = [city_collection.plot_top_emitters(z, 10, False)[i][0] for i in range(3)]
-#print((city_collection.plot_top_emitters(z, 10, False)).sort( key=lambda x: x[1]))
-
-
-#city_collection.plot_top_emitters(z, 2, False)

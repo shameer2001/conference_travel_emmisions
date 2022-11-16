@@ -32,7 +32,7 @@ print(sydney.distance_to(perth))
 
 def test_distance_to():
     result = algiers.distance_to(pergamino)
-    expected = 9596.676 #calculated using excel
+    expected = 9596.676 #calculated using excel (same method for all 'expected' in this file)
 
     assert approx(expected, rel = 0.001)  == expected
 
@@ -138,7 +138,9 @@ def test_sorted_by_emissions():
 
 ####################### NEGATIVE TESTS #########################
 
-def test_negative_City_inputs():
+def test_City_inputs():
+    '''Test type and valid value of `City` class inputs'''
+
     with pytest.raises(TypeError):
         wrong_city_type = City(0, 'Test', 2, -18, -18)
     with pytest.raises(TypeError):
@@ -154,14 +156,14 @@ def test_negative_City_inputs():
 
 
     with pytest.raises(ValueError):
-        lat_out_of_range = City('Test', 'Test', 2, 300, -18)
+        lat_out_of_range = City('Test', 'Test', 2, 300, -18) #for >90
     with pytest.raises(ValueError):
-        lat_out_of_range = City('Test', 'Test', 2, -300, -18)
+        lat_out_of_range = City('Test', 'Test', 2, -300, -18) #<90
 
     with pytest.raises(ValueError):
-        long_out_of_range = City('Test', 'Test', 2, 300, -18)
+        long_out_of_range = City('Test', 'Test', 2, 300, -18) #>180
     with pytest.raises(ValueError):
-        long_out_of_range = City('Test', 'Test', 2, -300, -18)
+        long_out_of_range = City('Test', 'Test', 2, -300, -18) #<180
 
 
 
@@ -174,28 +176,36 @@ def test_negative_City_inputs():
 
 
 
-def test_negative_n_value():
+def test_n_value():
     with pytest.raises(ValueError):
-        n_larger_than_countries = collection.plot_top_emitters(algiers, 1000, False)
+        n_larger_than_countries = collection.plot_top_emitters(algiers, 1000, False) #n is bigger than number of countries in list
     with pytest.raises(TypeError):
-        wrong_n_type = collection.plot_top_emitters(algiers, 'Test', False)
+        wrong_n_type = collection.plot_top_emitters(algiers, 'Test', False) 
 
 
-def test_negative_save_type():
+def test_save_type():
     with pytest.raises(TypeError):
         wrong_save_type = collection.plot_top_emitters(algiers, 3, 'Test')
 
 
-def test_negative_collection_list():
+
+
+def test_collection_list():
+    '''Testing the value and type in `CityCollection` input list'''
+
     with pytest.raises(ValueError):
-        empty_list = CityCollection([])
+        empty_list = CityCollection([]) 
 
     with pytest.raises(TypeError):
-        not_list_type = CityCollection({'Test', 'Test'})
+        not_list_type = CityCollection({'Test', 'Test'}) #input is not a list
 
 
 
-def test_negative_City_objects():
+
+
+def test_City_objects():
+    '''Testing if all function that require a `City` object input are actually `City` objects'''
+
     with pytest.raises(TypeError):
         incorrect_host_city_type = algiers.distance_to('pergamino')
     with pytest.raises(TypeError):
@@ -203,7 +213,7 @@ def test_negative_City_objects():
 
 
     with pytest.raises(TypeError):
-        CityCollection([algiers, 'algiers', dhaka])
+        CityCollection([algiers, 'algiers', dhaka]) #one item in input list is not a `City` object
     with pytest.raises(TypeError):
         incorrect_host_city_type = collection.total_distance_travel_to('algiers')
     with pytest.raises(TypeError):

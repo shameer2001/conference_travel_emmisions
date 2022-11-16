@@ -12,12 +12,6 @@ def read_attendees_file(filepath: Path) -> CityCollection:
 
         next(csv_reader) #skip header
 
-        #attendee_nums = [int(row[0]) for row in csv_reader]
-        #countries = [str(row[1]) for row in csv_reader]
-        #states =  [str(row[2]) for row in csv_reader]
-        #cities =  [str(row[3]) for row in csv_reader]
-        #latitudes =  [float(row[4]) for row in csv_reader]
-        #longitudes =  [float(row[5]) for row in csv_reader]
 
         attendee_nums =[]
         countries=[]
@@ -35,49 +29,9 @@ def read_attendees_file(filepath: Path) -> CityCollection:
             latitudes.append( float(row[4]) )
             longitudes.append( float(row[5]) )
 
+        #list of all city objects for all cities in csv:
+        all_City_objects = [City(cities[i], countries[i], attendee_nums[i], latitudes[i], longitudes[i]) for i in range(len(cities))] 
 
-        all_City_objects = [City(cities[i], countries[i], attendee_nums[i], latitudes[i], longitudes[i]) for i in range(len(cities))]
+        return CityCollection(all_City_objects)
 
-        all_City_objects_dict = {}
-         
-        for i in range(len(cities)):
-            all_City_objects_dict[cities[i]] = all_City_objects[i]
-
-        #print(attendee_nums)
-        #print(countries)
-
-        #for i in range(len(cities)):
-            #exec("%s = %d" % (cities[i], all_City_objects[i]))
-
-        return CityCollection(all_City_objects), all_City_objects_dict
-
-
-collection = read_attendees_file(file_path)[0]
-city_dict = read_attendees_file(file_path)[1]
-#print(read_attendees_file(file_path)[2])
-
-#collection.plot_top_emitters(city_dict['San Francisco'], 7, False)
-
-
-#collection.plot_top_emitters(city_dict['San Francisco'], 7, False) 
-
-#print(city_dict['Zurich'].distance_to(city_dict['San Francisco']))
-
-zurich = City('Zurich', 'Switzerland', 52, 47.22, 8.33)
-san_francisco = City('San Francisco', 'United States', 71, 37.77, -122.41)
-
-#print(zurich.distance_to(san_francisco))
-#print(zurich.co2_to(san_francisco))
-
-#print(collection.total_attendees())
-#print(len(collection.countries()))
-#print(collection.total_distance_travel_to(zurich))
-#print(sum(collection.travel_by_country(zurich).values()))
-#print(collection.travel_by_country(zurich))
-#print(collection.total_co2(zurich))
-#print(sum(collection.co2_by_country(zurich).values()))
-
-#print(collection.sorted_by_emissions())
-#collection.plot_top_emitters(zurich, 7, False) 
-#collection.summary(zurich)
 
