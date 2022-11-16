@@ -14,16 +14,27 @@ city_list = [pergamino, sydney, richmond,  dhaka]
 collection = CityCollection(city_list)
 #print(algiers.distance_to(pergamino))
 #print(algiers.co2_to(pergamino))
-print(collection.total_co2(algiers))
-print(collection.countries())
-print(collection.total_attendees())
+#print(collection.total_co2(algiers))
+#print(collection.countries())
+#print(collection.total_attendees())
+brisbane = City('Brisbane', 'Australia', 6, -27.4689682, 153.0234991) 
+perth = City('Perth', 'Australia', 17, -31.9527121, 115.8604796) 
 
+print(richmond.distance_to(sydney))
+print(sydney.distance_to(perth))
+
+#print(collection.co2_by_country(algiers))
+
+#for i in city_list:
+    #print(collection.total_co2(i))
+
+#print(collection.sorted_by_emissions()[0])
 
 def test_distance_to():
     result = algiers.distance_to(pergamino)
-    expected = 9596.676
+    expected = 9596.676 #calculated using excel
 
-    assert result == approx(expected, rel = 0.001)
+    assert approx(expected, rel = 0.001)  == expected
 
 
 
@@ -31,15 +42,15 @@ def test_co2_to():
     result = algiers.co2_to(pergamino)
     expected = 2879002.712
 
-    assert result == approx(expected, rel = 0.001)
+    assert approx(expected, rel = 0.001)  == expected
 
 
 
-# def test_countries(): ########
-#     result = collection.countries()
-#     expected = ['Australia',  'Argentina', 'Bangladesh']
+def test_countries(): 
+    result = collection.countries()
+    expected = ['Argentina', 'Australia', 'Bangladesh'] #sort in alphabetical order
 
-#     assert result == expected
+    assert result == expected
 
 
 
@@ -55,16 +66,77 @@ def test_total_distance_travel_to():
     result = collection.total_distance_travel_to(algiers)
     expected = 1481471.539
 
-    assert result == approx(expected, rel = 0.001)
+    assert approx(result, rel=0.001) == expected
 
 
 def test_total_co2():
     result = collection.total_co2(algiers)
     expected = 444441461.582
 
-    assert result == approx(expected, rel = 0.001)    
+    assert approx(result, rel = 0.001)   == expected
 
 
+
+
+def test_travel_by_country():
+    result = collection.travel_by_country(algiers)
+    expected = {'Argentina': 9596.676, 'Australia': 1386330.243, 'Bangladesh': 85544.619}
+
+
+    assert approx(result, rel = 0.001) == expected
+
+
+
+
+def test_co2_by_country():
+    result = collection.co2_by_country(algiers)
+    expected = {'Argentina': 2879002.712, 'Australia': 415899072.947, 'Bangladesh': 25663385.922}
+
+
+    assert approx(result, rel = 0.001) == expected
+
+
+
+
+def test_co2_edge_case():
+    '''Testing the limits/edge cases/if statements in co2_to() function
+    '''
+    perth = City('Perth', 'Australia', 17, -31.9527121, 115.8604796) #a city between 1000-8000 km of sydney
+
+
+    #for <1000km if statement:
+    result1 = richmond.co2_to(sydney)/(  richmond.distance_to(sydney)*richmond.attendee_num  ) #only want scalefactor
+    expected1 = 200
+
+    #1000-8000km:
+    result2 = sydney.co2_to(perth)/(  sydney.distance_to(perth)*sydney.attendee_num  )
+    expected2 = 250
+
+    #>8000km:
+    result3 = sydney.co2_to(algiers)/(  sydney.distance_to(algiers)*sydney.attendee_num  )
+    expected3 = 300
+
+
+    assert approx(result1) == expected1
+    assert approx(result2) == expected2
+    assert approx(result3) == expected3
+
+
+
+
+
+def test_sorted_by_emissions():
+    result = collection.sorted_by_emissions()
+    expected = [('Richmond', 31040794.376), ('Sydney', 31181900.729), ('Dhaka', 227694996.767) , ('Pergamino', 341389884.731)  ] #sorted by emmision (low to high)
+
+    assert [tuples[0] for tuples in result] == [tuples[0] for tuples in expected] #names
+    assert approx([tuples[1] for tuples in result], rel=0.001) == [tuples[1] for tuples in expected] #emmision values
+
+    
+
+
+
+####################### NEGATIVE TESTS #########################
 
 def test_negative_City_inputs():
     with pytest.raises(TypeError):
@@ -112,3 +184,39 @@ def test_negative_n_value():
 def test_negative_save_type():
     with pytest.raises(TypeError):
         wrong_save_type = collection.plot_top_emitters(algiers, 3, 'Test')
+
+
+def test_negative_collection_list():
+    with pytest.raises(ValueError):
+        empty_list = CityCollection([])
+
+    with pytest.raises(TypeError):
+        not_list_type = CityCollection({'Test', 'Test'})
+
+
+
+def test_negative_City_objects():
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = algiers.distance_to('pergamino')
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = algiers.co2_to('pergamino')
+
+
+    with pytest.raises(TypeError):
+        CityCollection([algiers, 'algiers', dhaka])
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = collection.total_distance_travel_to('algiers')
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = collection.travel_by_country('algiers')
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = collection.total_co2('algiers')
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = collection.co2_by_country('algiers')
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = collection.summary('algiers')
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = collection.sorted_by_emissions('algiers')
+    with pytest.raises(TypeError):
+        incorrect_host_city_type = collection.plot_top_emitters('algiers')
+                
+
