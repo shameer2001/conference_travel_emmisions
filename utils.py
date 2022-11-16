@@ -61,21 +61,23 @@ city_dict = read_attendees_file(file_path)[1]
 
 #collection.plot_top_emitters(city_dict['San Francisco'], 7, False) 
 
-print(city_dict['Zurich'].distance_to(city_dict['San Francisco']))
+#print(city_dict['Zurich'].distance_to(city_dict['San Francisco']))
 
 zurich = City('Zurich', 'Switzerland', 52, 47.22, 8.33)
 san_francisco = City('San Francisco', 'United States', 71, 37.77, -122.41)
 
-print(zurich.co2_to(san_francisco))
+#print(zurich.distance_to(san_francisco))
+#print(zurich.co2_to(san_francisco))
 
-
+#print(collection.total_attendees())
+#print(len(collection.countries()))
 #print(collection.total_distance_travel_to(zurich))
 #print(sum(collection.travel_by_country(zurich).values()))
 #print(collection.travel_by_country(zurich))
 #print(collection.total_co2(zurich))
-#print(collection.co2_by_country(zurich))
+#print(sum(collection.co2_by_country(zurich).values()))
 
 #print(collection.sorted_by_emissions())
-collection.plot_top_emitters(zurich, 7, False) 
-collection.summary(zurich)
+#collection.plot_top_emitters(zurich, 7, False) 
+#collection.summary(zurich)
 
